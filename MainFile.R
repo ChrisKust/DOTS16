@@ -31,6 +31,9 @@ fields <- c("vorname", "nachname", "statistiker","est1","est2","est3","est4")
 # Shiny app with 3 fields that the user can submit data for
 shinyApp(
   ui = fluidPage(
+    tags$div(id="table", class="shiny-input", 
+             dataTableOutput( "results2" )
+    ),
     textInput("vorname", "Vorname", ""),
     textInput("nachname", "Nachname", ""),
     checkboxInput("statistiker", "Ich kenne mich in Statistik aus", FALSE),
@@ -79,9 +82,19 @@ shinyApp(
 ################ ERROR WHEN HIDE IS PRESSED => MISSING VALUE IN IF!  
       
       observeEvent(input$evaluate, {
-        output$results <- renderDataTable({
-          input$submit
-          loadData()
+        ##calculate scores
+        true_values<-c(20,50,100,34)
+        num_part<-dim(responses)[1]
+        scores<-numeric(num_part)
+        for(i in 1:num_part)
+        {
+          scores[i]<-sum((as.numeric(responses[i,4:7])-true_values)^2)  ### as.numeric geht nicht => Eingabe ist faktor. Falsche Umwandlung!!!
+        }
+        which(scores==sort(scores,decreasing=FALSE)[1])->winner1
+        which(scores==sort(scores,decreasing=FALSE)[2])->winner2
+        which(scores==sort(scores,decreasing=FALSE)[3])->winner3
+        output$results2 <- renderDataTable({
+          cbind(responses[c(winner1,winner2,winner3),],scores[c(winner1,winner2,winner3)])
         })
       })
     
