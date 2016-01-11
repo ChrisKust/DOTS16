@@ -74,8 +74,7 @@ shinyApp(
         output$results <- renderDataTable({
           input$submit
           loadData()
-          columnDefs=list(list(visible=FALSE,targets=1:2))
-        })
+        },options=list(pageLength=0))
       })
 ################ ERROR WHEN HIDE IS PRESSED => MISSING VALUE IN IF!  
       
