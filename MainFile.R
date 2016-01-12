@@ -106,6 +106,9 @@ shinyApp(
         output$results2 <- renderDataTable({
           cbind(responses[winners,],scores[winners])
         })
+        ### Here some further evaluations (boxplots, comp with true values and winners, mean estimate)
+        ### would be nice. these results could be (partially) presented in the UI or used to generate a final 
+        ### presentation!
       })
     
     
