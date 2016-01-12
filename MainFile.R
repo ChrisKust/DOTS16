@@ -88,13 +88,23 @@ shinyApp(
         scores<-numeric(num_part)
         for(i in 1:num_part)
         {
-          scores[i]<-sum((as.numeric(responses[i,4:7])-true_values)^2)  ### as.numeric geht nicht => Eingabe ist faktor. Falsche Umwandlung!!!
+          e1<-responses[i,4:7]$est1
+          e1<-as.numeric(levels(e1))[e1]
+          e2<-responses[i,4:7]$est2
+          e2<-as.numeric(levels(e2))[e2]
+          e3<-responses[i,4:7]$est3
+          e3<-as.numeric(levels(e3))[e3]
+          e4<-responses[i,4:7]$est4
+          e4<-as.numeric(levels(e4))[e4]
+          dat<-c(e1,e2,e3,e4)
+          scores[i]<-sum((dat-true_values)^2)  
         }
         which(scores==sort(scores,decreasing=FALSE)[1])->winner1
         which(scores==sort(scores,decreasing=FALSE)[2])->winner2
         which(scores==sort(scores,decreasing=FALSE)[3])->winner3
+        winners<-c(as.vector(winner1),as.vector(winner2),as.vector(winner3))
         output$results2 <- renderDataTable({
-          cbind(responses[c(winner1,winner2,winner3),],scores[c(winner1,winner2,winner3)])
+          cbind(responses[winners,],scores[winners])
         })
       })
     
