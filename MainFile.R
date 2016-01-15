@@ -48,6 +48,8 @@ shinyApp(
                          dataTableOutput( "results" )
     )  ) 
   ),
+  
+  ### I added a 'Zufallschätzung' button in the UI to generate test data! This has to be removed in the final UI!
   server = function(input, output, session) {
     
     # Whenever a field is filled, aggregate all form data
