@@ -1,3 +1,5 @@
+### This file is OUTDATED !!! Use server.R and ui.R instead!
+
 library(shiny)
 library(DT)
 
