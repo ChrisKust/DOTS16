@@ -15,7 +15,7 @@ shinyUI(
                       DT::dataTableOutput( "results2" )
     ),  tags$div(id="table", class="shiny-input",
                  DT::dataTableOutput( "results" )
-    )  ) 
+    ),actionButton("clear","Lösche Alles")  ) 
   )
   
   )

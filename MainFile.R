@@ -98,6 +98,7 @@ shinyApp(
         },options=list(pageLength=0))
       })
 
+
       
       observeEvent(input$evaluate, {
         ##calculate scores
