@@ -2,10 +2,10 @@ shinyServer(
   
   function(input, output, session) {
     
-    ##### REMOVE TABLE
-    if(length(ls())>0)
-      save(responses,file="Backup.Rdata")
-    rm(list=ls())
+    ##### REMOVE TABLE (used in local application)
+#    if(length(ls())>0)
+#      save(responses,file="Backup.Rdata")
+#    rm(list=ls())
     ##### REMOVE TABLE
     
     saveData <- function(data) {
