@@ -23,6 +23,7 @@ shinyServer(
       }
     }
     
+    fields <- c("vorname", "nachname", "statistiker","est1","est2","est3","est4")
     
     # Whenever a field is filled, aggregate all form data
     formData <- reactive({
@@ -54,7 +55,7 @@ shinyServer(
     })
     
     observeEvent(input$show, {
-      output$results <- renderDataTable({
+      output$results <- DT::renderDataTable({
         input$submit
         loadData()
       })
@@ -62,7 +63,7 @@ shinyServer(
     
     
     observeEvent(input$hideit, {
-      output$results <- renderDataTable({
+      output$results <- DT::renderDataTable({
         input$submit
         loadData()
       },options=list(pageLength=0))
@@ -91,7 +92,7 @@ shinyServer(
       which(scores==sort(scores,decreasing=FALSE)[2])->winner2
       which(scores==sort(scores,decreasing=FALSE)[3])->winner3
       winners<-c(as.vector(winner1),as.vector(winner2),as.vector(winner3))
-      output$results2 <- renderDataTable({
+      output$results2 <- DT::renderDataTable({
         cbind(responses[winners,],scores[winners])
       })
       t1<-responses[,4:7]$est1
@@ -109,7 +110,7 @@ shinyServer(
       m<-matrix(c(mean(t1),mean(t2),mean(t3),mean(t4),true_values),ncol=4,byrow=TRUE)
       rownames(m)<-c("Mittlere Schätzug","Wahrer Wert")
       colnames(m)<-c("Box1","Box2","Box3","Box4")
-      output$summary <- renderDataTable({
+      output$summary <- DT::renderDataTable({
         m
       })
       ### Here some further evaluations (boxplots, comp with true values and winners, mean estimate)
