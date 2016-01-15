@@ -31,9 +31,8 @@ fields <- c("vorname", "nachname", "statistiker","est1","est2","est3","est4")
 # Shiny app with 3 fields that the user can submit data for
 shinyApp(
   ui = fluidPage(
-    tags$div(id="table", class="shiny-input", 
-             dataTableOutput( "results2" )
-    ),
+    fluidRow(
+      column(6,
     textInput("vorname", "Vorname", ""),
     textInput("nachname", "Nachname", ""),
     checkboxInput("statistiker", "Ich kenne mich in Statistik aus", FALSE),
@@ -41,10 +40,13 @@ shinyApp(
     sliderInput("est2", "Schätzung für die 2. Box", 0, 150, 1, ticks = FALSE),
     sliderInput("est3", "Schätzung für die 3. Box", 0, 150, 1, ticks = FALSE),
     sliderInput("est4", "Schätzung für die 4. Box", 0, 150, 1, ticks = FALSE),
-    actionButton("submit", "Submit"),actionButton("show", "Zeige"),actionButton("hideit", "Verstecke"),actionButton("evaluate", "Auswerten"),
-    tags$div(id="table", class="shiny-input", 
-             dataTableOutput( "results" )
-    ),tags$hr()
+    actionButton("submit", "Submit"),actionButton("show", "Zeige"),actionButton("hideit", "Verstecke"),actionButton("evaluate", "Auswerten"),actionButton("random", "Zufallsschätzung")),
+    column(6,plotOutput("boxPlot"),dataTableOutput( "summary" ),tags$hr())),
+    fluidRow(tags$div(id="table", class="shiny-input", 
+                      dataTableOutput( "results2" )
+    ),  tags$div(id="table", class="shiny-input",
+                         dataTableOutput( "results" )
+    )  ) 
   ),
   server = function(input, output, session) {
     
@@ -57,12 +59,24 @@ shinyApp(
     # When the Submit button is clicked, save the form data
     observeEvent(input$submit, {
       saveData(formData())
+      updateCheckboxInput(session,"statistiker",value=FALSE)
       updateTextInput(session, "vorname", value = "Bitte Eintragen")
       updateTextInput(session, "nachname", value = "Bitte Eintragen")
       updateSliderInput(session, "est1", value = 0)
       updateSliderInput(session, "est2", value = 0)
       updateSliderInput(session, "est3", value = 0)
       updateSliderInput(session, "est4", value = 0)
+    })
+    
+    observeEvent(input$random, {
+      updateCheckboxInput(session,"statistiker",value=rbinom(1,1,0.5))
+      updateTextInput(session, "vorname", value = sample(c("A","B","C","D","E"),10,replace=T))
+      updateTextInput(session, "nachname", value = sample(c("A","B","C","D","E"),10,replace=T))
+      updateSliderInput(session, "est1", value = round(runif(1,min=0,max=150),digits=0))
+      updateSliderInput(session, "est2", value = round(runif(1,min=0,max=150),digits=0))
+      updateSliderInput(session, "est3", value = round(runif(1,min=0,max=150),digits=0))
+      updateSliderInput(session, "est4", value = round(runif(1,min=0,max=150),digits=0))
+      saveData(formData())
     })
     
     observeEvent(input$show, {
@@ -72,14 +86,14 @@ shinyApp(
     })
     })
     
-############## ERROR WHEN HIDE IS PRESSED => MISSING VALUE IN IF!
+
       observeEvent(input$hideit, {
         output$results <- renderDataTable({
           input$submit
           loadData()
         },options=list(pageLength=0))
       })
-################ ERROR WHEN HIDE IS PRESSED => MISSING VALUE IN IF!  
+
       
       observeEvent(input$evaluate, {
         ##calculate scores
@@ -106,9 +120,29 @@ shinyApp(
         output$results2 <- renderDataTable({
           cbind(responses[winners,],scores[winners])
         })
+        t1<-responses[,4:7]$est1
+        t1<-as.numeric(levels(t1))[t1]
+        t2<-responses[,4:7]$est2
+        t2<-as.numeric(levels(t2))[t2]
+        t3<-responses[,4:7]$est3
+        t3<-as.numeric(levels(t3))[t3]
+        t4<-responses[,4:7]$est3
+        t4<-as.numeric(levels(t4))[t4]
+        output$boxPlot <- renderPlot({
+          boxplot(t1,t2,t3,t4,col=c(1,2,3,4))
+          abline(h=true_values,lty=2,col=c(1,2,3,4))
+        })
+        m<-matrix(c(mean(t1),mean(t2),mean(t3),mean(t4),true_values),ncol=4,byrow=TRUE)
+        rownames(m)<-c("Mittlere Schätzug","Wahrer Wert")
+        colnames(m)<-c("Box1","Box2","Box3","Box4")
+                output$summary <- renderDataTable({
+          m
+        })
         ### Here some further evaluations (boxplots, comp with true values and winners, mean estimate)
         ### would be nice. these results could be (partially) presented in the UI or used to generate a final 
         ### presentation!
+        
+        ### TO DO: KNITR output for a final presentation!
       })
     
     
@@ -119,7 +153,7 @@ shinyApp(
       input$submit
       loadData()
     }) 
-
+    
     
   }
 )
