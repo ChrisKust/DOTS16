@@ -27,10 +27,10 @@ shinyServer(
     outputDir <- "responses"
     dir.create("responses")
     
-    saveData <- function(data) {
+    saveData <- function(data,surname) {
       data <- t(data)
       # Create a unique file name
-      fileName <- sprintf("%s_%s.csv", as.integer(Sys.time()), digest::digest(data))
+      fileName <- sprintf("%s_%s_%s.csv", surname,as.integer(Sys.time()), digest::digest(data))
       # Write the file to the local system
       write.csv(
         x = data,
@@ -58,7 +58,7 @@ shinyServer(
     
     # When the Submit button is clicked, save the form data
     observeEvent(input$submit, {
-      saveData(formData())
+      saveData(formData(),input$nachname)
       updateCheckboxInput(session,"statistiker",value=FALSE)
       updateTextInput(session, "vorname", value = "Bitte Eintragen")
       updateTextInput(session, "nachname", value = "Bitte Eintragen")
@@ -76,7 +76,8 @@ shinyServer(
       updateSliderInput(session, "est2", value = round(runif(1,min=0,max=150),digits=0))
       updateSliderInput(session, "est3", value = round(runif(1,min=0,max=150),digits=0))
       updateSliderInput(session, "est4", value = round(runif(1,min=0,max=150),digits=0))
-      saveData(formData())
+      surname<-input$nachname
+      saveData(formData(),surname)
     })
     
     observeEvent(input$show, {
