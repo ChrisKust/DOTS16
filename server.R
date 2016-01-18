@@ -80,10 +80,14 @@ shinyServer(
     })
     
     observeEvent(input$show, {
+      if(input$psw=="setosa")
+      {
       output$results <- DT::renderDataTable({
         input$submit
         loadData()
       })
+      }
+      else{}
     })
     
     
@@ -95,27 +99,33 @@ shinyServer(
     })
     
     observeEvent(input$clear, {
+      if(input$psw=="setosa")
+      {
       unlink("responses",recursive=T)
       dir.create("responses")
-      
+      }
+      else{}
     })
     
     
     observeEvent(input$evaluate, {
-      ##calculate scores
+      if(input$psw=="setosa")
+      {
+       ##calculate scores
+      responses<-loadData()
       true_values<-c(20,50,100,34)
       num_part<-dim(responses)[1]
       scores<-numeric(num_part)
       for(i in 1:num_part)
       {
-        e1<-responses[i,4:7]$est1
-        e1<-as.numeric(levels(e1))[e1]
-        e2<-responses[i,4:7]$est2
-        e2<-as.numeric(levels(e2))[e2]
-        e3<-responses[i,4:7]$est3
-        e3<-as.numeric(levels(e3))[e3]
-        e4<-responses[i,4:7]$est4
-        e4<-as.numeric(levels(e4))[e4]
+        e1<-responses$est1[i]
+       # e1<-as.numeric(levels(e1))[e1]
+        e2<-responses$est2[i]
+      #  e2<-as.numeric(levels(e2))[e2]
+        e3<-responses$est3[i]
+      #  e3<-as.numeric(levels(e3))[e3]
+        e4<-responses$est4[i]
+    #    e4<-as.numeric(levels(e4))[e4]
         dat<-c(e1,e2,e3,e4)
         scores[i]<-sum((dat-true_values)^2)  
       }
@@ -126,14 +136,14 @@ shinyServer(
       output$results2 <- DT::renderDataTable({
         cbind(responses[winners,],scores[winners])
       })
-      t1<-responses[,4:7]$est1
-      t1<-as.numeric(levels(t1))[t1]
-      t2<-responses[,4:7]$est2
-      t2<-as.numeric(levels(t2))[t2]
-      t3<-responses[,4:7]$est3
-      t3<-as.numeric(levels(t3))[t3]
-      t4<-responses[,4:7]$est3
-      t4<-as.numeric(levels(t4))[t4]
+      t1<-responses$est1
+     # t1<-as.numeric(levels(t1))[t1]
+      t2<-responses$est2
+     # t2<-as.numeric(levels(t2))[t2]
+      t3<-responses$est3
+    #  t3<-as.numeric(levels(t3))[t3]
+      t4<-responses$est3
+   #   t4<-as.numeric(levels(t4))[t4]
       output$boxPlot <- renderPlot({
         boxplot(t1,t2,t3,t4,col=c(1,2,3,4))
         abline(h=true_values,lty=2,col=c(1,2,3,4))
@@ -147,7 +157,8 @@ shinyServer(
       ### Here some further evaluations (boxplots, comp with true values and winners, mean estimate)
       ### would be nice. these results could be (partially) presented in the UI or used to generate a final 
       ### presentation!
-      
+      }
+      else{}
       ### TO DO: KNITR output for a final presentation!
     })
     

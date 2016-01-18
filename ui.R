@@ -2,7 +2,7 @@ shinyUI(
   fluidPage(
     fluidRow(
       column(6,
-             textInput("vorname", "Vorname", ""),
+            textInput("vorname", "Vorname", ""),
              textInput("nachname", "Nachname", ""),
              checkboxInput("statistiker", "Ich kenne mich in Statistik aus", FALSE),
              sliderInput("est1", "Schätzung für die 1. Box", 0, 150, 1, ticks = FALSE),
@@ -15,7 +15,7 @@ shinyUI(
                       DT::dataTableOutput( "results2" )
     ),  tags$div(id="table", class="shiny-input",
                  DT::dataTableOutput( "results" )
-    ),actionButton("clear","Lösche Alles")  ) 
+    ),actionButton("clear","Lösche Alles"),passwordInput("psw","Password","")  ) 
   )
   
   )
