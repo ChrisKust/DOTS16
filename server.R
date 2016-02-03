@@ -73,8 +73,8 @@ shinyServer(
     observeEvent(input$random, {
       true_values<-c(118,69,66,38,70,70)
       updateCheckboxInput(session,"statistiker",value=rbinom(1,1,0.5))
-      updateTextInput(session, "vorname", value = sample(c("A","B","C","D","E"),10,replace=T))
-      updateTextInput(session, "nachname", value = sample(c("A","B","C","D","E"),10,replace=T))
+      updateTextInput(session, "vorname", value = paste(sample(c("Jürgen","Thomas","Eva","Maria","Heinz"),2,replace=F),collapse="-"))
+      updateTextInput(session, "nachname", value = sample(c("Müller","Meier","Schmidt","Szugat","Klopp"),1,replace=T))
       updateSliderInput(session, "est1", value = true_values[1] + round(runif(1,min=-0.2*true_values[1],max=0.2*true_values[1]),digits=0))
       updateSliderInput(session, "est2", value = true_values[2] + round(runif(1,min=-0.2*true_values[2],max=0.2*true_values[2]),digits=0))
       updateSliderInput(session, "est3", value = true_values[3] + round(runif(1,min=-0.2*true_values[3],max=0.2*true_values[3]),digits=0))
@@ -157,11 +157,24 @@ shinyServer(
       t5<-responses$est5
       t6<-responses$est6
       output$boxPlot <- renderPlot({
-        boxplot(t1,t2,t3,t4,t5,t6,col=c(1,2,3,4,5,6))
-        abline(h=true_values,lty=2,col=c(1,2,3,4,5,6))
+        par(mfrow=c(1,6))
+        boxplot(t1,ylim=c(0,150),main="Box 1")
+        abline(h=true_values[1],lty=2,col=1)
+        boxplot(t2,col=2,ylim=c(0,150),main="Box 2")
+        abline(h=true_values[2],lty=2,col=2)
+        boxplot(t3,col=3,ylim=c(0,150),main="Box 3")
+        abline(h=true_values[3],lty=2,col=3)
+        boxplot(t4,col=4,ylim=c(0,150),main="Box 4")
+        abline(h=true_values[4],lty=2,col=4)
+        boxplot(t5,col=5,ylim=c(0,150),main="Box 5")
+        abline(h=true_values[5],lty=2,col=5)
+        boxplot(t6,col=6,ylim=c(0,150),main="Box 6")
+        abline(h=true_values[6],lty=2,col=6)
+        #boxplot(t1,t2,t3,t4,t5,t6,col=c(1,2,3,4,5,6))
+        #abline(h=true_values,lty=2,col=c(1,2,3,4,5,6))
       })
-      m<-matrix(c(mean(t1),mean(t2),mean(t3),mean(t4),mean(t5),mean(t6),true_values),ncol=6,byrow=TRUE)
-      rownames(m)<-c("Mittlere Schätzug","Wahrer Wert")
+      m<-matrix(c(mean(t1),mean(t2),mean(t3),mean(t4),mean(t5),mean(t6),median(t1),median(t2),median(t3),median(t4),median(t5),median(t6),true_values),ncol=6,byrow=TRUE)
+      rownames(m)<-c("Mittlere Schätzug","Mediane Schätzung","Wahrer Wert")
       colnames(m)<-c("Box1","Box2","Box3","Box4","Box5","Box6")
       output$summary <- DT::renderDataTable({
         m
