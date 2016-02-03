@@ -71,15 +71,16 @@ shinyServer(
     })
     
     observeEvent(input$random, {
+      true_values<-c(118,69,66,38,70,70)
       updateCheckboxInput(session,"statistiker",value=rbinom(1,1,0.5))
       updateTextInput(session, "vorname", value = sample(c("A","B","C","D","E"),10,replace=T))
       updateTextInput(session, "nachname", value = sample(c("A","B","C","D","E"),10,replace=T))
-      updateSliderInput(session, "est1", value = round(runif(1,min=0,max=150),digits=0))
-      updateSliderInput(session, "est2", value = round(runif(1,min=0,max=150),digits=0))
-      updateSliderInput(session, "est3", value = round(runif(1,min=0,max=150),digits=0))
-      updateSliderInput(session, "est4", value = round(runif(1,min=0,max=150),digits=0))
-      updateSliderInput(session, "est5", value = round(runif(1,min=0,max=150),digits=0))
-      updateSliderInput(session, "est6", value = round(runif(1,min=0,max=150),digits=0))
+      updateSliderInput(session, "est1", value = true_values[1] + round(runif(1,min=-30,max=30),digits=0))
+      updateSliderInput(session, "est2", value = true_values[2] + round(runif(1,min=-30,max=30),digits=0))
+      updateSliderInput(session, "est3", value = true_values[3] + round(runif(1,min=-30,max=30),digits=0))
+      updateSliderInput(session, "est4", value = true_values[4] + round(runif(1,min=-30,max=30),digits=0))
+      updateSliderInput(session, "est5", value = true_values[5] + round(runif(1,min=-30,max=30),digits=0))
+      updateSliderInput(session, "est6", value = true_values[6] + round(runif(1,min=-30,max=30),digits=0))
       surname<-input$nachname
       saveData(formData(),surname)
     })
