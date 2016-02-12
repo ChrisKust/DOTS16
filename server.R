@@ -162,7 +162,7 @@ shinyServer(
  #     t5<-responses$est5
  #     t6<-responses$est6
       output$boxPlot <- renderPlot({
-        par(mfrow=c(1,6))
+        par(mfrow=c(1,3))
         boxplot(t1,ylim=c(0,150),main="Box A")
         abline(h=true_values[1],lty=2,col=1)
         boxplot(t2,col=2,ylim=c(0,150),main="Box B")
