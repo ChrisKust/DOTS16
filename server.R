@@ -48,7 +48,8 @@ shinyServer(
       data
     }
     
-    fields <- c("vorname", "nachname", "statistiker","est1","est2","est3","est4","est5","est6")
+#    fields <- c("vorname", "nachname", "statistiker","est1","est2","est3","est4","est5","est6")
+     fields <- c("vorname", "nachname", "statistiker","est1","est2","est3")
     
     # Whenever a field is filled, aggregate all form data
     formData <- reactive({
@@ -65,22 +66,23 @@ shinyServer(
       updateSliderInput(session, "est1", value = 0)
       updateSliderInput(session, "est2", value = 0)
       updateSliderInput(session, "est3", value = 0)
-      updateSliderInput(session, "est4", value = 0)
-      updateSliderInput(session, "est5", value = 0)
-      updateSliderInput(session, "est6", value = 0)
+      #updateSliderInput(session, "est4", value = 0)
+      #updateSliderInput(session, "est5", value = 0)
+      #updateSliderInput(session, "est6", value = 0)
     })
     
     observeEvent(input$random, {
-      true_values<-c(118,69,66,38,70,70)
+#      true_values<-c(118,69,66,38,70,70)
+      true_values<-c(78,46,70)
       updateCheckboxInput(session,"statistiker",value=rbinom(1,1,0.5))
       updateTextInput(session, "vorname", value = paste(sample(c("Jürgen","Thomas","Eva","Maria","Heinz"),2,replace=F),collapse="-"))
       updateTextInput(session, "nachname", value = sample(c("Müller","Meier","Schmidt","Szugat","Klopp"),1,replace=T))
       updateSliderInput(session, "est1", value = true_values[1] + round(runif(1,min=-0.2*true_values[1],max=0.2*true_values[1]),digits=0))
       updateSliderInput(session, "est2", value = true_values[2] + round(runif(1,min=-0.2*true_values[2],max=0.2*true_values[2]),digits=0))
       updateSliderInput(session, "est3", value = true_values[3] + round(runif(1,min=-0.2*true_values[3],max=0.2*true_values[3]),digits=0))
-      updateSliderInput(session, "est4", value = true_values[4] + round(runif(1,min=-0.2*true_values[4],max=0.2*true_values[4]),digits=0))
-      updateSliderInput(session, "est5", value = true_values[5] + round(runif(1,min=-0.2*true_values[5],max=0.2*true_values[5]),digits=0))
-      updateSliderInput(session, "est6", value = true_values[6] + round(runif(1,min=-0.2*true_values[6],max=0.2*true_values[6]),digits=0))
+   #   updateSliderInput(session, "est4", value = true_values[4] + round(runif(1,min=-0.2*true_values[4],max=0.2*true_values[4]),digits=0))
+    #  updateSliderInput(session, "est5", value = true_values[5] + round(runif(1,min=-0.2*true_values[5],max=0.2*true_values[5]),digits=0))
+   #   updateSliderInput(session, "est6", value = true_values[6] + round(runif(1,min=-0.2*true_values[6],max=0.2*true_values[6]),digits=0))
       surname<-input$nachname
       saveData(formData(),surname)
     })
@@ -121,7 +123,8 @@ shinyServer(
       {
        ##calculate scores
       responses<-loadData()
-      true_values<-c(118,69,66,38,70,70)
+    #  true_values<-c(118,69,66,38,70,70)
+      true_values<-c(78,46,70)
       num_part<-dim(responses)[1]
       scores<-numeric(num_part)
       for(i in 1:num_part)
@@ -132,17 +135,19 @@ shinyServer(
       #  e2<-as.numeric(levels(e2))[e2]
         e3<-responses$est3[i]
       #  e3<-as.numeric(levels(e3))[e3]
-        e4<-responses$est4[i]
+   #     e4<-responses$est4[i]
     #    e4<-as.numeric(levels(e4))[e4]
-        e5<-responses$est5[i]
-        e6<-responses$est6[i]
-        dat<-c(e1,e2,e3,e4,e5,e6)
-        scores[i]<-sum((dat-true_values)^2)
+   #     e5<-responses$est5[i]
+    #    e6<-responses$est6[i]
+     #   dat<-c(e1,e2,e3,e4,e5,e6)
+        dat<-c(e1,e2,e3)
+        scores[i]<-sum((dat-true_values)^2)+runif(1,min=0,max=1)
       }
       which(scores==sort(scores,decreasing=FALSE)[1])->winner1
       which(scores==sort(scores,decreasing=FALSE)[2])->winner2
       which(scores==sort(scores,decreasing=FALSE)[3])->winner3
       winners<-c(as.vector(winner1),as.vector(winner2),as.vector(winner3))
+     scores<-round(scores,digits=0)
       output$results2 <- DT::renderDataTable({
         cbind(responses[winners,],scores[winners])
       })
@@ -152,30 +157,32 @@ shinyServer(
      # t2<-as.numeric(levels(t2))[t2]
       t3<-responses$est3
     #  t3<-as.numeric(levels(t3))[t3]
-      t4<-responses$est4
+  #    t4<-responses$est4
    #   t4<-as.numeric(levels(t4))[t4]
-      t5<-responses$est5
-      t6<-responses$est6
+ #     t5<-responses$est5
+ #     t6<-responses$est6
       output$boxPlot <- renderPlot({
         par(mfrow=c(1,6))
-        boxplot(t1,ylim=c(0,150),main="Box 1")
+        boxplot(t1,ylim=c(0,150),main="Box A")
         abline(h=true_values[1],lty=2,col=1)
-        boxplot(t2,col=2,ylim=c(0,150),main="Box 2")
+        boxplot(t2,col=2,ylim=c(0,150),main="Box B")
         abline(h=true_values[2],lty=2,col=2)
-        boxplot(t3,col=3,ylim=c(0,150),main="Box 3")
+        boxplot(t3,col=3,ylim=c(0,150),main="Box C")
         abline(h=true_values[3],lty=2,col=3)
-        boxplot(t4,col=4,ylim=c(0,150),main="Box 4")
-        abline(h=true_values[4],lty=2,col=4)
-        boxplot(t5,col=5,ylim=c(0,150),main="Box 5")
-        abline(h=true_values[5],lty=2,col=5)
-        boxplot(t6,col=6,ylim=c(0,150),main="Box 6")
-        abline(h=true_values[6],lty=2,col=6)
+      #  boxplot(t4,col=4,ylim=c(0,150),main="Box 4")
+     #   abline(h=true_values[4],lty=2,col=4)
+      #  boxplot(t5,col=5,ylim=c(0,150),main="Box 5")
+      #  abline(h=true_values[5],lty=2,col=5)
+      #  boxplot(t6,col=6,ylim=c(0,150),main="Box 6")
+      #  abline(h=true_values[6],lty=2,col=6)
         #boxplot(t1,t2,t3,t4,t5,t6,col=c(1,2,3,4,5,6))
         #abline(h=true_values,lty=2,col=c(1,2,3,4,5,6))
       })
-      m<-matrix(c(mean(t1),mean(t2),mean(t3),mean(t4),mean(t5),mean(t6),median(t1),median(t2),median(t3),median(t4),median(t5),median(t6),true_values),ncol=6,byrow=TRUE)
+    #  m<-matrix(c(mean(t1),mean(t2),mean(t3),mean(t4),mean(t5),mean(t6),median(t1),median(t2),median(t3),median(t4),median(t5),median(t6),true_values),ncol=6,byrow=TRUE)
+      m<-matrix(c(mean(t1),mean(t2),mean(t3),median(t1),median(t2),median(t3),true_values),ncol=3,byrow=TRUE)
       rownames(m)<-c("Mittlere Schätzug","Mediane Schätzung","Wahrer Wert")
-      colnames(m)<-c("Box1","Box2","Box3","Box4","Box5","Box6")
+     # colnames(m)<-c("Box A","Box B","Box C","Box4","Box5","Box6")
+      colnames(m)<-c("Box A","Box B","Box C")
       output$summary <- DT::renderDataTable({
         m
       })
