@@ -17,7 +17,7 @@ shinyUI(
                       DT::dataTableOutput( "results2" )
     ),  tags$div(id="table", class="shiny-input",
                  DT::dataTableOutput( "results" )
-    ),actionButton("clear","Lösche Alles"),actionButton("show", "Zeige"),actionButton("hideit", "Verstecke"),actionButton("evaluate", "Auswerten"),passwordInput("psw","Password","")  ) 
+    ),actionButton("clear","Lösche Alles"),actionButton("show", "Zeige"),actionButton("hideit", "Verstecke"),actionButton("evaluate", "Auswerten"),actionButton("evaluatetot", "Auswerten Total"),passwordInput("psw","Password","")  ) 
   )
   
   )
