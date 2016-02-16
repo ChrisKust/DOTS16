@@ -73,7 +73,7 @@ shinyServer(
     
     observeEvent(input$random, {
 #      true_values<-c(118,69,66,38,70,70)
-      true_values<-c(29,46,70)
+      true_values<-c(26,48,14)
       updateCheckboxInput(session,"statistiker",value=rbinom(1,1,0.5))
       updateTextInput(session, "vorname", value = paste(sample(c("Jürgen","Thomas","Eva","Maria","Heinz"),2,replace=F),collapse="-"))
       updateTextInput(session, "nachname", value = sample(c("Müller","Meier","Schmidt","Szugat","Klopp"),1,replace=T))
@@ -124,7 +124,7 @@ shinyServer(
        ##calculate scores
       responses<-loadData()
     #  true_values<-c(118,69,66,38,70,70)
-      true_values<-c(29,46,70)
+      true_values<-c(26,48,14)
       num_part<-dim(responses)[1]
       scores<-numeric(num_part)
       for(i in 1:num_part)
